@@ -29,7 +29,7 @@ io.on('connection', (socket) => {
     // Handle a custom 'chat message' event
     socket.on('incoming_call', (msg) => {
 
-        console.log(`message: ${{msg}}`);
+        console.log(`message: ${msg}`);
         incomingUserID = 1010
         recieverSocket= connectedUsers.get(incomingUserID)
         if (recieverSocket !== undefined){ 
