@@ -51,7 +51,11 @@ io.on('connection', (socket) => {
 
     });
 });
-
+app.get("/ping", (req,res)=>{
+    res.status(200).json({
+        "message": "Pong"
+    })
+})
 // Start the server on port 3000
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
