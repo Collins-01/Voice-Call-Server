@@ -28,17 +28,16 @@ io.on('connection', (socket: Socket) => {
 
 
     // Handle a custom 'chat message' event
-    socket.on('incoming_call', (msg: any) => {
-        console.log(`Type of incoming data: ${typeof msg}`);
-         const parsedData = JSON.parse(msg);
+    socket.on('incoming_call', (data: any) => {
+        console.log(`Type of incoming data: ${typeof data}`);
+        //  const parsedData = JSON.parse(msg);
         // Now 'parsedData' is an object with the parsed data
-        console.log('Parsed Data:', parsedData);
-
-        const incomingUserID = parsedData.user_id;
+        console.log('Incoming  Data:', data);
+        const incomingUserID = data.user_id;
         const recieverSocket = connectedUsers.get(incomingUserID);
 
         if (recieverSocket !== undefined) {
-            recieverSocket.emit('incoming_call', msg);
+            recieverSocket.emit('incoming_call', data);
         }
 
         // io.emit('incoming_call', msg);
