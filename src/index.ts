@@ -7,6 +7,8 @@ const app: Application = express();
 const server = http.createServer(app);
 const io = new Server(server);
 const connectedUsers = new Map<string, Socket>();
+const INCOMING_CALL = 'incoming_call';
+const REJECT_CALL = 'reject_call';
 
 // Serve static files from the 'public' directory
 // app.use(express.static('public'));
@@ -27,21 +29,33 @@ io.on('connection', (socket: Socket) => {
     console.log(`Total number of connected users ==>`, connectedUsers.size);
 
 
-    // Handle a custom 'chat message' event
-    socket.on('incoming_call', (data: any) => {
-        console.log(`Type of incoming data: ${typeof data}`);
-        //  const parsedData = JSON.parse(msg);
-        // Now 'parsedData' is an object with the parsed data
+    // Handle a custom 'incoming call' event
+    socket.on(INCOMING_CALL, (data: any) => {
+        console.log(`Type of incoming data from ${INCOMING_CALL}: ${typeof data}`);
+        
         console.log('Incoming  Data:', data);
         const incomingUserID = data.user_id;
         const recieverSocket = connectedUsers.get(incomingUserID);
 
         if (recieverSocket !== undefined) {
-            recieverSocket.emit('incoming_call', data);
+            recieverSocket.emit(INCOMING_CALL, data);
+        }
+        
+    });
+
+    socket.on(REJECT_CALL, (data:any)=>{
+        console.log(`Type of incoming data from ${REJECT_CALL}: ${typeof data}`);
+        console.log('Incoming  Data:', data);
+        const incomingUserID = data.user_id;
+        const recieverSocket = connectedUsers.get(incomingUserID);
+
+        if (recieverSocket !== undefined) {
+            recieverSocket.emit(REJECT_CALL, {
+                'message': 'call was rejected'
+            });
         }
 
-        // io.emit('incoming_call', msg);
-    });
+    })
 
     // Handle the disconnect event
     socket.on('disconnect', () => {
