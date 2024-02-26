@@ -59,6 +59,25 @@ app.get('/ping', (req, res) => {
     });
 });
 
+app.post("/generate-token",(req,res)=>{
+    if(!req.body){
+        return res.status(400).json({
+            message : `Channel name is required `
+        })
+    }
+    
+    if(!req.body.channel){
+        return res.status(400).json({
+            message : `Please attach a valid channel name is required `
+        })
+    }
+
+    return res.status(201).json({
+        message: `Token generated successfully`,
+        token: `jkclksdjnclkjdnckjndkjnlkdnlknlfvljkfnvn`
+    })
+})
+
 // Start the server on port 3000
 const PORT: number = parseInt(process.env.PORT as string, 10) || 3000;
 server.listen(PORT, () => {
