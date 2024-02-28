@@ -1,7 +1,7 @@
 import express, {Application} from 'express';
 import http from 'http';
 import { Server,Socket } from 'socket.io';
-import dotenv from 'dotenv';
+import bodyParser, {BodyParser} from 'body-parser'
 
 const app: Application = express();
 const server = http.createServer(app);
@@ -9,9 +9,7 @@ const io = new Server(server);
 const connectedUsers = new Map<string, Socket>();
 const INCOMING_CALL = 'incoming_call';
 const REJECT_CALL = 'reject_call';
-dotenv.config();
-// Serve static files from the 'public' directory
-// app.use(express.static('public'));
+
 
 // Define a connection event for new sockets
 io.on('connection', (socket: Socket) => {
@@ -67,6 +65,9 @@ io.on('connection', (socket: Socket) => {
     });
 });
 
+app.use(bodyParser.urlencoded({ extended: false }))
+// parse application/json
+app.use(bodyParser.json())
 app.get('/ping', (req, res) => {
     res.status(200).json({
         message: 'Pong',
@@ -85,11 +86,11 @@ app.post("/generate-token",(req,res)=>{
             message : `Please attach a valid channel name is required `
         })
     }
-    const token = process.env.AGORA_TOKEN
+ const   AGORA_TOKEN = '007eJxTYBASenjV1H3y3hj5uF/79sp6rd8hsKbr8xIbX4f/+3U91p1VYEhJtTAyMzY1MzczNzGxBPLSTAySLRMtDIzNzdKSk5JaZO+nNgQyMsRWMTIyMkAgiM/PEJafmZyq65yYk6Prkpqbz8AAALxHIsY='
 
     return res.status(201).json({
         message: `Token generated successfully`,
-        token,
+        token: AGORA_TOKEN,
     })
 })
 
