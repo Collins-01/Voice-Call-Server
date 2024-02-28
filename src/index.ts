@@ -1,7 +1,7 @@
 import express, {Application} from 'express';
 import http from 'http';
 import { Server,Socket } from 'socket.io';
-
+import dotenv from 'dotenv';
 
 const app: Application = express();
 const server = http.createServer(app);
@@ -9,7 +9,7 @@ const io = new Server(server);
 const connectedUsers = new Map<string, Socket>();
 const INCOMING_CALL = 'incoming_call';
 const REJECT_CALL = 'reject_call';
-
+dotenv.config();
 // Serve static files from the 'public' directory
 // app.use(express.static('public'));
 
@@ -85,10 +85,11 @@ app.post("/generate-token",(req,res)=>{
             message : `Please attach a valid channel name is required `
         })
     }
+    const token = process.env.AGORA_TOKEN
 
     return res.status(201).json({
         message: `Token generated successfully`,
-        token: `jkclksdjnclkjdnckjndkjnlkdnlknlfvljkfnvn`
+        token,
     })
 })
 
