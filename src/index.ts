@@ -1,7 +1,9 @@
-import express, {Application} from 'express';
+import express, {Application, NextFunction, Request, Response} from 'express';
 import http from 'http';
 import { Server,Socket } from 'socket.io';
-import bodyParser, {BodyParser} from 'body-parser'
+import bodyParser from 'body-parser'
+import {RtcTokenBuilder, RtcRole} from 'agora-access-token'
+import dotenv from 'dotenv'
 
 const app: Application = express();
 const server = http.createServer(app);
@@ -11,6 +13,7 @@ const INCOMING_CALL = 'incoming_call';
 const REJECT_CALL = 'reject_call';
 
 
+dotenv.config();
 // Define a connection event for new sockets
 io.on('connection', (socket: Socket) => {
     console.log('A user connected');
@@ -64,6 +67,12 @@ io.on('connection', (socket: Socket) => {
         connectedUsers.delete(userId);
     });
 });
+const nocache = (req:Request, resp:Response, next:NextFunction) => {
+    resp.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+    resp.header('Expires', '-1');
+    resp.header('Pragma', 'no-cache');
+    next();
+  }
 
 app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
@@ -74,7 +83,9 @@ app.get('/ping', (req, res) => {
     });
 });
 
-app.post("/generate-token",(req,res)=>{
+
+app.post("/generate-token",nocache,(req,res)=>{
+    res.header('Access-Control-Allow-Origin', '*');
     if(!req.body){
         return res.status(400).json({
             message : `Channel name is required `
@@ -86,11 +97,12 @@ app.post("/generate-token",(req,res)=>{
             message : `Please attach a valid channel name is required `
         })
     }
- const   AGORA_TOKEN = '007eJxTYBASenjV1H3y3hj5uF/79sp6rd8hsKbr8xIbX4f/+3U91p1VYEhJtTAyMzY1MzczNzGxBPLSTAySLRMtDIzNzdKSk5JaZO+nNgQyMsRWMTIyMkAgiM/PEJafmZyq65yYk6Prkpqbz8AAALxHIsY='
+  const  token = RtcTokenBuilder.buildTokenWithAccount(process.env.APP_ID!, process.env.APP_CERTIFICATE!, req.body.channel, '01', RtcRole.PUBLISHER, 1800);
+
 
     return res.status(201).json({
         message: `Token generated successfully`,
-        token: AGORA_TOKEN,
+        token,
     })
 })
 
