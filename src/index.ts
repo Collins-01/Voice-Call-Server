@@ -77,6 +77,12 @@ const nocache = (req:Request, resp:Response, next:NextFunction) => {
 app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
+app.use((req, res, next) => {
+    res.status(404).json({
+        message: `Not Found`
+    })
+  });
+  
 app.get('/ping', (req, res) => {
     res.status(200).json({
         message: 'Pong',
