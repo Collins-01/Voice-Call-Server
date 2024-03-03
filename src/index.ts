@@ -80,6 +80,7 @@ app.use(bodyParser.json())
 app.get('/ping', (req, res) => {
     res.status(200).json({
         message: 'Pong',
+        ip: req.ip
     });
 });
 
@@ -103,6 +104,7 @@ app.post("/generate-token",nocache,(req,res)=>{
     return res.status(201).json({
         message: `Token generated successfully`,
         token,
+        
     })
 })
 
