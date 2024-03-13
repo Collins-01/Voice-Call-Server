@@ -104,7 +104,7 @@ app.post("/generate-token",nocache,(req,res)=>{
             message : `Please attach a valid channel name is required `
         })
     }
-  const  token = RtcTokenBuilder.buildTokenWithAccount(process.env.APP_ID!, process.env.APP_CERTIFICATE!, req.body.channel, '01', RtcRole.PUBLISHER, 1800);
+  const  token = RtcTokenBuilder.buildTokenWithAccount('de826356767449de8f40c9a80376fcbb', 'e4e1406eaba94c8485cbd1adfcef3389', req.body.channel, '01', RtcRole.PUBLISHER, 1800);
 
 
     return res.status(201).json({
